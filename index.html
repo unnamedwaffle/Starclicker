@@ -146,7 +146,7 @@
                 <!-- Game Overview -->
                 <section>
                     <h3 class="text-xl font-bold text-star-gold mb-3">🌟 Game Overview</h3>
-                    <p class="text-gray-300 mb-4">Welcome to Stardust Clicker! Explore the cosmos by clicking stars to collect stardust, purchase upgrades to boost your power, and unlock the mysteries of the universe through prestige.</p>
+                    <p class="text-gray-300 mb-4">Welcome to Stardust Clicker! Explore the cosmos by clicking stars to collect stardust, purchase upgrades to boost your power, and unlock achievements as you journey through space.</p>
                 </section>
                 
                 <!-- Basic Mechanics -->
@@ -212,33 +212,7 @@
                     </div>
                 </section>
                 
-                <!-- Prestige System -->
-                <section>
-                    <h3 class="text-xl font-bold text-cosmic-pink mb-3">💫 Prestige System</h3>
-                    <p class="text-gray-300 mb-4">Reset your progress to gain permanent bonuses! Each prestige level requires specific stardust amounts and grants unique perks:</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
-                        <div>
-                            <h4 class="font-bold text-star-gold">Prestige Levels 1-5:</h4>
-                            <ul class="space-y-1 mt-2">
-                                <li>• <strong>Level 1 (1M):</strong> 2x click power</li>
-                                <li>• <strong>Level 2 (3M):</strong> 1.5x auto production</li>
-                                <li>• <strong>Level 3 (10M):</strong> 3x click power</li>
-                                <li>• <strong>Level 4 (25M):</strong> 2x auto production</li>
-                                <li>• <strong>Level 5 (100M):</strong> 5x click power</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-star-gold">Prestige Levels 6-10:</h4>
-                            <ul class="space-y-1 mt-2">
-                                <li>• <strong>Level 6 (300M):</strong> 3x auto production</li>
-                                <li>• <strong>Level 7 (1B):</strong> 10x click power</li>
-                                <li>• <strong>Level 8 (3B):</strong> 5x auto production</li>
-                                <li>• <strong>Level 9 (10B):</strong> 25x click power</li>
-                                <li>• <strong>Level 10 (50B):</strong> 10x auto production</li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
+
                 
                 <!-- Achievements -->
                 <section>
@@ -259,7 +233,7 @@
                                 <li>• <strong>Automation Master:</strong> 100 stardust/sec</li>
                                 <li>• <strong>Cosmic Millionaire:</strong> 1M stardust</li>
                                 <li>• <strong>Click Legend:</strong> 10,000 clicks</li>
-                                <li>• <strong>Prestige Master:</strong> Complete first prestige</li>
+                                <li>• <strong>Upgrade Master:</strong> Purchase 50 upgrades</li>
                             </ul>
                         </div>
                     </div>
@@ -271,8 +245,8 @@
                     <ul class="text-gray-300 space-y-2">
                         <li><strong>Early Game:</strong> Focus on click upgrades first, then buy cheap auto generators</li>
                         <li><strong>Mid Game:</strong> Balance between auto generators and click upgrades based on your playstyle</li>
-                        <li><strong>Late Game:</strong> Prepare for prestige by maximizing stardust before reset</li>
-                        <li><strong>Prestige Strategy:</strong> Don't prestige too early - maximize your current run first</li>
+                        <li><strong>Late Game:</strong> Max out all upgrades and aim for the highest achievements</li>
+                        <li><strong>Efficiency:</strong> Higher tier upgrades give exponentially more power per cost</li>
                         <li><strong>Idle Strategy:</strong> Invest heavily in auto generators for passive income</li>
                         <li><strong>Active Strategy:</strong> Focus on click upgrades and actively click for maximum efficiency</li>
                     </ul>
@@ -317,8 +291,8 @@
             </div>
             <div class="bg-black bg-opacity-50 backdrop-blur-sm rounded-xl p-4 border border-cosmic-cyan border-opacity-30">
                 <div class="text-center">
-                    <div class="text-xl md:text-2xl font-bold text-cosmic-cyan" id="prestige-level">0</div>
-                    <div class="text-xs md:text-sm text-gray-300">💫 Prestige</div>
+                    <div class="text-xl md:text-2xl font-bold text-cosmic-cyan" id="total-upgrades">0</div>
+                    <div class="text-xs md:text-sm text-gray-300">🔧 Total Upgrades</div>
                 </div>
             </div>
         </div>
@@ -374,22 +348,7 @@
                     </div>
                 </div>
                 
-                <!-- Prestige -->
-                <div class="bg-black bg-opacity-50 backdrop-blur-sm rounded-xl p-6 border border-white border-opacity-10 prestige-glow">
-                    <h3 class="text-xl font-bold mb-4 text-center bg-gradient-to-r from-cosmic-pink to-nebula-purple bg-clip-text text-transparent">💫 Prestige</h3>
-                    <div class="text-sm text-gray-300 mb-4">
-                        <p>Next Level: <span id="next-prestige-req">1M</span> stardust</p>
-                        <p>Perk: <span id="next-prestige-perk">2x click power</span></p>
-                    </div>
-                    <button id="prestige-btn" 
-                            class="w-full bg-gradient-to-r from-cosmic-pink to-nebula-purple hover:from-nebula-purple hover:to-cosmic-pink text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                        Prestige to Level <span id="next-prestige-level">1</span>
-                    </button>
-                    <div class="text-xs text-gray-400 mt-2 space-y-1">
-                        <p>Current Level: <span id="current-prestige">0</span></p>
-                        <p id="prestige-bonuses">No bonuses yet</p>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -402,7 +361,6 @@
             totalClicks: 0,
             baseClickPower: 1,
             clickMultiplierTotal: 1,
-            prestigeLevel: 0,
             clickUpgrades: {
                 starforge: { level: 0, baseCost: 15, multiplier: 2 },
                 cosmicEnhancer: { level: 0, baseCost: 100, multiplier: 5 },
@@ -432,19 +390,7 @@
         let lastStardust = -1;
         let upgradeButtonsCache = null;
 
-        // Prestige levels and requirements
-        const prestigeLevels = [
-            { level: 1, requirement: 1000000, perk: "2x click power", clickMultiplier: 2, autoMultiplier: 1 },
-            { level: 2, requirement: 3000000, perk: "1.5x auto production", clickMultiplier: 1, autoMultiplier: 1.5 },
-            { level: 3, requirement: 10000000, perk: "3x click power", clickMultiplier: 3, autoMultiplier: 1 },
-            { level: 4, requirement: 25000000, perk: "2x auto production", clickMultiplier: 1, autoMultiplier: 2 },
-            { level: 5, requirement: 100000000, perk: "5x click power", clickMultiplier: 5, autoMultiplier: 1 },
-            { level: 6, requirement: 300000000, perk: "3x auto production", clickMultiplier: 1, autoMultiplier: 3 },
-            { level: 7, requirement: 1000000000, perk: "10x click power", clickMultiplier: 10, autoMultiplier: 1 },
-            { level: 8, requirement: 3000000000, perk: "5x auto production", clickMultiplier: 1, autoMultiplier: 5 },
-            { level: 9, requirement: 10000000000, perk: "25x click power", clickMultiplier: 25, autoMultiplier: 1 },
-            { level: 10, requirement: 50000000000, perk: "10x auto production", clickMultiplier: 1, autoMultiplier: 10 }
-        ];
+
 
         // Achievement definitions
         const achievements = [
@@ -455,7 +401,7 @@
             { id: 'million-stardust', name: 'Cosmic Millionaire', desc: 'Collect 1,000,000 stardust', icon: '🎩', req: () => gameState.stardust >= 1000000 },
             { id: 'first-upgrade', name: 'Technology Pioneer', desc: 'Buy your first upgrade', icon: '🔧', req: () => getTotalUpgrades() > 0 },
             { id: 'auto-pilot', name: 'Automation Master', desc: 'Generate 100 stardust per second', icon: '🤖', req: () => gameState.stardustPerSecond >= 100 },
-            { id: 'first-prestige', name: 'Prestige Master', desc: 'Complete your first prestige', icon: '💫', req: () => gameState.prestigeLevel >= 1 }
+            { id: 'upgrade-master', name: 'Upgrade Master', desc: 'Purchase 50 total upgrades', icon: '⚡', req: () => getTotalUpgrades() >= 50 }
         ];
 
         // Initialize dark mode
@@ -511,19 +457,7 @@
             return total;
         }
 
-        function getPrestigeBonuses() {
-            let clickMultiplier = 1;
-            let autoMultiplier = 1;
-            
-            for (let i = 0; i < gameState.prestigeLevel; i++) {
-                if (prestigeLevels[i]) {
-                    clickMultiplier *= prestigeLevels[i].clickMultiplier;
-                    autoMultiplier *= prestigeLevels[i].autoMultiplier;
-                }
-            }
-            
-            return { clickMultiplier, autoMultiplier };
-        }
+
 
         function createFloatingText(x, y, text, color = '#fbbf24') {
             const element = document.createElement('div');
@@ -543,11 +477,12 @@
         function calculateClickPower() {
             let totalMultiplier = 1;
             Object.values(gameState.clickUpgrades).forEach(upgrade => {
-                totalMultiplier += upgrade.level * (upgrade.multiplier - 1);
+                if (upgrade.level > 0) {
+                    totalMultiplier *= Math.pow(upgrade.multiplier, upgrade.level);
+                }
             });
             
-            const bonuses = getPrestigeBonuses();
-            return gameState.baseClickPower * totalMultiplier * bonuses.clickMultiplier;
+            return gameState.baseClickPower * totalMultiplier;
         }
 
         // Main click handler
@@ -580,7 +515,7 @@
             document.getElementById('stardust-count').textContent = formatNumber(gameState.stardust);
             document.getElementById('stardust-per-second').textContent = formatNumber(gameState.stardustPerSecond);
             document.getElementById('total-clicks').textContent = formatNumber(gameState.totalClicks);
-            document.getElementById('prestige-level').textContent = gameState.prestigeLevel;
+            document.getElementById('total-upgrades').textContent = getTotalUpgrades();
             
             document.getElementById('click-power').textContent = formatNumber(calculateClickPower());
             
@@ -589,8 +524,6 @@
                 updateUpgradeButtons();
                 lastStardust = gameState.stardust;
             }
-            
-            updatePrestigeDisplay();
         }
 
         // Create upgrade buttons - optimized
@@ -731,84 +664,13 @@
 
         // Update auto production
         function updateAutoProduction() {
-            const bonuses = getPrestigeBonuses();
             gameState.stardustPerSecond = 0;
             Object.values(gameState.autoGenerators).forEach(gen => {
                 gameState.stardustPerSecond += gen.count * gen.production;
             });
-            gameState.stardustPerSecond *= bonuses.autoMultiplier;
         }
 
-        // Prestige system
-        function updatePrestigeDisplay() {
-            const nextLevel = gameState.prestigeLevel + 1;
-            const nextPrestige = prestigeLevels[nextLevel - 1];
-            
-            if (nextPrestige) {
-                document.getElementById('next-prestige-level').textContent = nextLevel;
-                document.getElementById('next-prestige-req').textContent = formatNumber(nextPrestige.requirement);
-                document.getElementById('next-prestige-perk').textContent = nextPrestige.perk;
-                
-                const canPrestige = gameState.stardust >= nextPrestige.requirement;
-                const prestigeBtn = document.getElementById('prestige-btn');
-                prestigeBtn.disabled = !canPrestige;
-                
-                if (canPrestige) {
-                    prestigeBtn.onclick = () => prestige(nextLevel);
-                }
-            } else {
-                document.getElementById('next-prestige-level').textContent = 'MAX';
-                document.getElementById('next-prestige-req').textContent = 'MAX LEVEL';
-                document.getElementById('next-prestige-perk').textContent = 'All unlocked!';
-                document.getElementById('prestige-btn').disabled = true;
-            }
-            
-            document.getElementById('current-prestige').textContent = gameState.prestigeLevel;
-            
-            // Show active bonuses
-            const bonuses = getPrestigeBonuses();
-            let bonusText = 'No bonuses yet';
-            if (gameState.prestigeLevel > 0) {
-                bonusText = `${formatNumber(bonuses.clickMultiplier)}x click, ${formatNumber(bonuses.autoMultiplier)}x auto`;
-            }
-            document.getElementById('prestige-bonuses').textContent = bonusText;
-        }
 
-        function prestige(level) {
-            showConfirmDialog(`Prestige to level ${level}? This will reset your progress but grant permanent bonuses.`, () => {
-                gameState.prestigeLevel = level;
-                gameState.stardust = 0;
-                gameState.stardustPerSecond = 0;
-                gameState.totalClicks = 0;
-                gameState.clickPower = 1;
-                
-                // Reset upgrades
-                Object.values(gameState.clickUpgrades).forEach(upgrade => upgrade.level = 0);
-                Object.values(gameState.autoGenerators).forEach(gen => gen.count = 0);
-                
-                // Reset cache
-                lastStardust = -1;
-                
-                updateAutoProduction();
-                updateDisplay();
-                checkAchievements();
-            });
-        }
-
-        function showConfirmDialog(message, onConfirm) {
-            const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 modal-backdrop bg-black bg-opacity-70 flex items-center justify-center z-50';
-            modal.innerHTML = `
-                <div class="bg-gradient-to-br from-space-dark to-void-black border-2 border-star-gold p-6 rounded-lg shadow-lg max-w-sm w-full mx-4">
-                    <p class="text-gray-300 mb-4">${message}</p>
-                    <div class="flex justify-end space-x-3">
-                        <button class="px-4 py-2 text-gray-400 hover:bg-gray-700 rounded" onclick="this.closest('.fixed').remove()">Cancel</button>
-                        <button class="px-4 py-2 bg-cosmic-pink text-white hover:bg-opacity-80 rounded" onclick="this.closest('.fixed').remove(); onConfirm()">Confirm</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
 
         // Achievements
         function checkAchievements() {
