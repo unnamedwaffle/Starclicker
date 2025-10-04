@@ -404,14 +404,14 @@
             clickMultiplierTotal: 1,
             prestigeLevel: 0,
             clickUpgrades: {
-                starforge: { level: 0, baseCost: 15, multiplier: 1 },
-                cosmicEnhancer: { level: 0, baseCost: 100, multiplier: 6 },
-                quantumAmplifier: { level: 0, baseCost: 700, multiplier: 24 },
-                stellarReactor: { level: 0, baseCost: 4900, multiplier: 96 },
-                novaCatalyst: { level: 0, baseCost: 34300, multiplier: 384 },
-                blackHoleGenerator: { level: 0, baseCost: 240100, multiplier: 1536 },
-                galaxyEngine: { level: 0, baseCost: 1680700, multiplier: 6144 },
-                universeForge: { level: 0, baseCost: 11764900, multiplier: 24576 }
+                starforge: { level: 0, baseCost: 15, multiplier: 2 },
+                cosmicEnhancer: { level: 0, baseCost: 100, multiplier: 5 },
+                quantumAmplifier: { level: 0, baseCost: 700, multiplier: 10 },
+                stellarReactor: { level: 0, baseCost: 4900, multiplier: 25 },
+                novaCatalyst: { level: 0, baseCost: 34300, multiplier: 100 },
+                blackHoleGenerator: { level: 0, baseCost: 240100, multiplier: 500 },
+                galaxyEngine: { level: 0, baseCost: 1680700, multiplier: 2500 },
+                universeForge: { level: 0, baseCost: 11764900, multiplier: 10000 }
             },
             autoGenerators: {
                 probe: { count: 0, baseCost: 10, production: 1 },
@@ -427,6 +427,10 @@
             },
             achievements: new Set()
         };
+
+        // Cached upgrade buttons to avoid rebuilding
+        let lastStardust = -1;
+        let upgradeButtonsCache = null;
 
         // Prestige levels and requirements
         const prestigeLevels = [
@@ -513,8 +517,8 @@
             
             for (let i = 0; i < gameState.prestigeLevel; i++) {
                 if (prestigeLevels[i]) {
-                    clickMultiplier += (prestigeLevels[i].clickMultiplier - 1);
-                    autoMultiplier += (prestigeLevels[i].autoMultiplier - 1);
+                    clickMultiplier *= prestigeLevels[i].clickMultiplier;
+                    autoMultiplier *= prestigeLevels[i].autoMultiplier;
                 }
             }
             
@@ -539,7 +543,7 @@
         function calculateClickPower() {
             let totalMultiplier = 1;
             Object.values(gameState.clickUpgrades).forEach(upgrade => {
-                totalMultiplier += upgrade.level * upgrade.multiplier;
+                totalMultiplier += upgrade.level * (upgrade.multiplier - 1);
             });
             
             const bonuses = getPrestigeBonuses();
@@ -571,7 +575,7 @@
             checkAchievements();
         });
 
-        // Update display
+        // Update display - optimized to only update what's necessary
         function updateDisplay() {
             document.getElementById('stardust-count').textContent = formatNumber(gameState.stardust);
             document.getElementById('stardust-per-second').textContent = formatNumber(gameState.stardustPerSecond);
@@ -580,11 +584,16 @@
             
             document.getElementById('click-power').textContent = formatNumber(calculateClickPower());
             
-            updateUpgradeButtons();
+            // Only update upgrades if stardust has changed significantly or upgrades were bought
+            if (Math.abs(gameState.stardust - lastStardust) > gameState.stardust * 0.01 || lastStardust === -1) {
+                updateUpgradeButtons();
+                lastStardust = gameState.stardust;
+            }
+            
             updatePrestigeDisplay();
         }
 
-        // Create upgrade buttons
+        // Create upgrade buttons - optimized
         function createUpgradeButton(type, key, data) {
             const cost = type === 'click' ? 
                 data.baseCost * Math.pow(1.5, data.level) :
@@ -642,45 +651,59 @@
                 }
             };
             
-            return `
-                <button class="w-full p-3 rounded-lg border transition-all duration-200 text-left ${
-                    canAfford 
-                        ? 'bg-gradient-to-r from-space-blue to-nebula-purple border-star-gold border-opacity-50 hover:border-opacity-100 hover:shadow-lg upgrade-glow' 
-                        : 'bg-gray-800 border-gray-600 opacity-50 cursor-not-allowed'
-                }" 
-                ${canAfford ? `onclick="buy${type === 'click' ? 'Click' : 'Auto'}Upgrade('${key}')"` : 'disabled'}>
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <div class="font-bold text-sm">${names[type][key]}</div>
-                            <div class="text-xs text-gray-300">${descriptions[type][key]}</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-star-gold font-bold text-sm">${formatNumber(cost)}</div>
-                            <div class="text-xs text-gray-400">✨</div>
-                        </div>
+            const button = document.createElement('button');
+            button.className = `w-full p-3 rounded-lg border transition-all duration-200 text-left ${
+                canAfford 
+                    ? 'bg-gradient-to-r from-space-blue to-nebula-purple border-star-gold border-opacity-50 hover:border-opacity-100 hover:shadow-lg upgrade-glow' 
+                    : 'bg-gray-800 border-gray-600 opacity-50 cursor-not-allowed'
+            }`;
+            
+            button.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-sm">${names[type][key]}</div>
+                        <div class="text-xs text-gray-300">${descriptions[type][key]}</div>
                     </div>
-                </button>
+                    <div class="text-right">
+                        <div class="text-star-gold font-bold text-sm">${formatNumber(cost)}</div>
+                        <div class="text-xs text-gray-400">✨</div>
+                    </div>
+                </div>
             `;
+            
+            if (canAfford) {
+                button.addEventListener('click', () => {
+                    if (type === 'click') {
+                        buyClickUpgrade(key);
+                    } else {
+                        buyAutoUpgrade(key);
+                    }
+                });
+            } else {
+                button.disabled = true;
+            }
+            
+            return button;
         }
 
-        // Update upgrade buttons
+        // Update upgrade buttons - optimized
         function updateUpgradeButtons() {
             // Click upgrades
-            let clickUpgradesHTML = '';
+            const clickContainer = document.getElementById('click-upgrades');
+            clickContainer.innerHTML = '';
             Object.entries(gameState.clickUpgrades).forEach(([key, data]) => {
-                clickUpgradesHTML += createUpgradeButton('click', key, data);
+                clickContainer.appendChild(createUpgradeButton('click', key, data));
             });
-            document.getElementById('click-upgrades').innerHTML = clickUpgradesHTML;
             
             // Auto generators
-            let autoGeneratorsHTML = '';
+            const autoContainer = document.getElementById('auto-generators');
+            autoContainer.innerHTML = '';
             Object.entries(gameState.autoGenerators).forEach(([key, data]) => {
-                autoGeneratorsHTML += createUpgradeButton('auto', key, data);
+                autoContainer.appendChild(createUpgradeButton('auto', key, data));
             });
-            document.getElementById('auto-generators').innerHTML = autoGeneratorsHTML;
         }
 
-        // Buy upgrades
+        // Buy upgrades - optimized with immediate feedback
         function buyClickUpgrade(key) {
             const upgrade = gameState.clickUpgrades[key];
             const cost = upgrade.baseCost * Math.pow(1.5, upgrade.level);
@@ -762,6 +785,9 @@
                 // Reset upgrades
                 Object.values(gameState.clickUpgrades).forEach(upgrade => upgrade.level = 0);
                 Object.values(gameState.autoGenerators).forEach(gen => gen.count = 0);
+                
+                // Reset cache
+                lastStardust = -1;
                 
                 updateAutoProduction();
                 updateDisplay();
